@@ -3,14 +3,14 @@
 
 using namespace std;
 
-int main()
-{
+int main(){
+
 	int* rozmiar;
 	rozmiar = new int;
 
 	cin >> *rozmiar;
 
-	Matrix* A = new Matrix(*rozmiar, *rozmiar);
+	Matrix* A = new Matrix(*rozmiar, 1);
 	Matrix* B = new Matrix(*rozmiar, 1);
 	A->fill(1);
 	A->print_matrix();
@@ -19,7 +19,7 @@ int main()
 	B->print_matrix();
 	cout << "\n";
 
-	A = new Matrix(*A * *B);
+	A = new Matrix(*A * (B->transpose()));
 	A->print_matrix();
 
 }

@@ -44,7 +44,7 @@ public:
 	}
 
 	Matrix operator + (const Matrix& x) {
-		//this + x = y
+		// y = this + x
 		if (*(x.rows) == *(this->rows) and *(x.columns) == *(this->columns)) {
 			Matrix y(*(this->rows), *(this->columns));
 			for (int i = 0; i < *rows; ++i) {
@@ -61,7 +61,7 @@ public:
 	}
 
 	Matrix operator - (const Matrix& x) {
-		//this + x = y
+		// y = this - x
 		if (*(x.rows) == *(this->rows) and *(x.columns) == *(this->columns)) {
 			Matrix y(*(this->rows), *(this->columns));
 			for (int i = 0; i < *rows; ++i) {
@@ -78,7 +78,7 @@ public:
 	}
 
 	Matrix operator * (const Matrix& x) {
-		//this * x = y
+		// y = this * x
 		if (*(this->columns) == *(x.rows)) {
 			Matrix y(*(this->rows), *(x.columns));
 			for (int i = 0; i < *(y.rows); ++i) {
@@ -94,4 +94,19 @@ public:
 			cout << "dimensions don't match, cannot multiply\n";
 		}
 	}
+
+	Matrix transpose() {
+		//y = this^T
+
+		Matrix y(*(this->columns), *(this->rows));
+		for (int i = 0; i < *(this->rows); ++i) {
+			for (int j = 0; j < *(this->columns); ++j) {
+				y.matrix[j][i] = this->matrix[i][j];
+			}
+		}
+
+		return y;
+
+	}
+
 };
