@@ -141,9 +141,6 @@
   <ItemGroup>
     <ClCompile Include="neural_network.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Matrix.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
