@@ -185,6 +185,7 @@ void print_image(vector<image>& images, int n) {
 class Network {
 
 public:
+
     int number_of_layers;
     vector<int> sizes;
     vector<vector<float>> biases; //vector of vectors with weights for biases
@@ -355,9 +356,6 @@ private:
 
             }
 
-
-            //b[number_of_layers - l -1] = delta;
-
             for (int j = 0; j < sizes[number_of_layers - l]; ++j) {
                 for (int k = 0; k < sizes[number_of_layers - l - 1]; ++k) {
                     w[w.size() - l][k][j] += delta[j] * net_values[number_of_layers - l - 1][k];
@@ -366,20 +364,9 @@ private:
 
         }
 
-        //b = delta_nabla_biases;
-        //w = delta_nabla_weights;
-
     }
 
     void update_mini_batch(vector<image>& batch, float eta, vector<vector<float>>& nabla_biases, vector<vector<vector<float>>>& nabla_weights) {
-
-
-
-        //vector<vector<float>> delta_nabla_biases;
-        //vector<vector<vector<float>>> delta_nabla_weights;
-
-
-
 
         for (int i = 0; i < batch.size(); ++i) {
 
@@ -489,7 +476,6 @@ public:
 
                 update_mini_batch(mini_batches[i], eta, nabla_biases, nabla_weights);
                 
-                /*
                 //progress bar
                 if (i % train_batch_size == 0) {
 
@@ -497,7 +483,6 @@ public:
 
 
                 }
-                */
 
             }
 
@@ -538,8 +523,8 @@ int main() {
     z.push_back(30);
     z.push_back(10);
 
-    Network ass(z);
+    Network net(z);
 
-    ass.SGD(training_data, 50, 10, 0.1, testing_data);
+    net.SGD(training_data, 50, 10, 0.1, testing_data);
 
 }
