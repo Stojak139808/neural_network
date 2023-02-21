@@ -35,8 +35,8 @@ class Networkgpu {
 
 public:
 	//network values
-	int* sizes;				//list with sizes of layers
-	int number_of_layers;	//number of neuron layers in the network
+	int* sizes;			//list with sizes of layers
+	int number_of_layers;		//number of neuron layers in the network
 	Matrixgpu** weights;		//list with weight Matrix for each layer
 	Matrixgpu** biases;		//list of bias vector for each layer
 	Matrixgpu** activations;	//list of vectors with neuron outputs for each layer
@@ -44,13 +44,13 @@ public:
 
 	//training values
 	int number_of_training_sets;
-	float** training_image_data;		//list of vectors with image pixel data, but normalized to the (0, 1) range
-	float** training_image_labels;		//list of vecotrs with expected net outputs, based on labels
+	float** training_image_data;	//list of vectors with image pixel data, but normalized to the (0, 1) range
+	float** training_image_labels;	//list of vecotrs with expected net outputs, based on labels
 
 	//testing data
 	int number_of_testing_sets;
-	float** testing_image_data;		//list of vectors with image pixel data, but normalized to the (0, 1) range
-	float** testing_image_labels;		//list of vecotrs with expected net outputs, based on labels
+	float** testing_image_data;	//list of vectors with image pixel data, but normalized to the (0, 1) range
+	float** testing_image_labels;	//list of vecotrs with expected net outputs, based on labels
 
 	Networkgpu(int* structure, int n_layers) {
 
@@ -88,13 +88,10 @@ private:
 	//functions for feeding forward
 
 	Matrixgpu activate_layer(Matrixgpu x) {
-		//x has to be a vector (n x 1), where (n x 1) is (rows x columns)
-		//return a new (n x 1) matrix, where the activation functions has beed applied element-wise
+		// x has to be a vector (n x 1), where (n x 1) is (rows x columns)
+		// return a new (n x 1) matrix, where the activation functions has
+		// beed applied element-wise
 
-
-		//////////////////////////////////////////////////////////
-		////////MAKE THEM ACTIVATE AT ONCE WITH ONE KERNEL///////////////////////DONE AND TESTED
-		//////////////////////////////////////////////////////////
 		Matrixgpu y(x.number_of_rows(), x.number_of_columns());
 
 		dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
@@ -116,15 +113,18 @@ public:
 		for (int i = 0; i < number_of_layers - 1; ++i) {
 			*z_values[i + 1] = *weights[i] * *activations[i] + *biases[i];
 			*activations[i + 1] = activate_layer(*z_values[i + 1]);
-			//printf("layer: %d\n", i + 1);
-			//activations[i + 1]->get_values();
-			//activations[i + 1]->print_matrix();//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		}
 
 	}
 
-	void load_training_sets(int** n_training_image_data, int** n_training_image_labels, int training_set_size, int** n_testing_image_data, int** n_testing_image_labels, int testing_set_size) {
+	void load_training_sets(int** n_training_image_data,
+				int** n_training_image_labels,
+				int training_set_size,
+				int** n_testing_image_data,
+				int** n_testing_image_labels,
+				int testing_set_size
+				) {
 		//cloning data sets, so they are independent from the MNIST object
 		number_of_training_sets = training_set_size;
 		number_of_testing_sets = testing_set_size;
@@ -218,12 +218,9 @@ private:
 
 	Matrixgpu activate_layer_prime(Matrixgpu x) {
 		//x has to be a vector (n x 1), where (n x 1) is (rows x columns)
-		//return a new (n x 1) matrix, where the derivative of activation functions has beed applied element-wise
+		//return a new (n x 1) matrix, where the derivative of activation
+		// functions has beed applied element-wise
 
-
-		//////////////////////////////////////////////////////////
-		////////MAKE THEM ACTIVATE AT ONCE WITH ONE KERNEL////////////////DONE AND TESTED
-		//////////////////////////////////////////////////////////
 		Matrixgpu y(x.number_of_rows(), x.number_of_columns());
 
 		dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
@@ -299,14 +296,6 @@ private:
 
 			max = 0;
 
-			//////////////////////////////////////////
-			////////ONE CUDAMEMCPY SHOULD WORK////////////////////DONE AND TESTED I GUESS
-			//////////////////////////////////////////
-			/*
-			for (int n = 0; n < sizes[0]; ++n) {
-				x.matrix[n][0] = testing_image_data[i][n];
-			}
-			*/
 			cudaMemcpy(x.get_pointer(), testing_image_data[i], sizein, cudaMemcpyHostToDevice);
 			for (int n = 0; n < sizes[number_of_layers - 1]; ++n) {
 				if (testing_image_labels[i][n] != 0) {
@@ -315,10 +304,6 @@ private:
 			}
 
 			feed_forard(x);
-
-			//////////////////////////////////////////
-			////////get values for last layer?////////
-			//////////////////////////////////////////
 			activations[number_of_layers - 1]->get_values();
 			for (int n = 0; n < sizes[number_of_layers - 1]; ++n) {
 				if (activations[number_of_layers - 1]->matrix[n][0] > max) {
@@ -500,12 +485,12 @@ int main() {
 	delete[] structure;
 
 	//loading data from MNIST object to network
-	net->load_training_sets(data->training_image_data,			//training inputs
-		data->training_image_labels,		//training outputs
-		data->number_of_training_sets,		//number of training sets
+	net->load_training_sets(data->training_image_data,	//training inputs
+		data->training_image_labels,			//training outputs
+		data->number_of_training_sets,			//number of training sets
 		data->testing_image_data,			//testing inputs
 		data->testing_image_labels,			//testing outputs
-		data->number_of_testing_sets		//number of testing sets
+		data->number_of_testing_sets			//number of testing sets
 	);
 
 	delete data;
